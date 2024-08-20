@@ -1,6 +1,6 @@
 # simple-calculator
 
-A simple calculator application that does basic arithmetic operations, including addition, subtraction, multiplication, division, and provides rollback of the most recent five results with a user-friendly interface.
+A basic calculator application that performs fundamental arithmetic operations—addition, subtraction, multiplication, and division—while also offers the ability to recall the last five calculation results within a user-friendly interface.
 
 
 Goals
