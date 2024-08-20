@@ -1,6 +1,6 @@
 # simple-calculator
 
-This project involves developing a simple calculator application with a functional GUI using Python. The calculator will feature basic arithmetic operations, including addition, subtraction, multiplication, and division, along with a user-friendly interface.
+A basic calculator application that performs fundamental arithmetic operations—addition, subtraction, multiplication, and division—while also offers the ability to recall the last five calculation results within a user-friendly interface.
 
 
 Goals
