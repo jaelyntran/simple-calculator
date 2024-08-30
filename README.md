@@ -10,6 +10,9 @@ Goals
 
 
 Challenges
+- Difficulty in choosing the optimal approach, such as whether to handle a single mathematical expression input or to support complex, multi-step calculations in one input.
+- Difficulty in determining the correct interpretation of the percentage sign, such as whether to subtract a certain percentage of the total sum or to subtract a fixed amount equivalent to the percentage value from the sum. 
 
 
 Take-away
+-
