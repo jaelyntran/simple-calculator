@@ -5,15 +5,16 @@ def main():
     user_input = input('Enter an equation: ')
     while user_input != '':
         try:
+            #==============RUN SimpleCalculator.py==============
+            #===================================================
             # Parse user input into a list
             # of equation elements
             expression = SimpleCalculator.parse_equation(user_input)
 
-            for val in expression:
-                print(val)
-
-            # Process tuple by precedence
+            # Process expression by precedence (PEMDAS)
             result = SimpleCalculator.calculate_expression(expression)
+
+            # Print result
             if result.is_integer():
                 print(f'= {int(result)}')
             else:

@@ -2,7 +2,7 @@ import re
 
 
 def parse_equation(user_input):
-    number_pattern = r'\d+\.?\d*'
+    number_pattern = r'-?\d+\.?\d*'
     operator_pattern = r'[-+*/]'
     percentage = r'%'
 
@@ -11,8 +11,8 @@ def parse_equation(user_input):
     # 2. Operator with optional spaces around
     # 3. Zero or more sequences of operators,
     # followed by numbers with optional % signs.
-    valid_pattern = r'^' + number_pattern + r'%?'\
-                    + r'(?:\s*' + operator_pattern + r'\s*'\
+    valid_pattern = r'^' + number_pattern + r'%?' \
+                    + r'(?:\s*' + operator_pattern + r'\s*' \
                     + number_pattern + r'%?' + r')*$'
 
     if not re.fullmatch(valid_pattern, user_input):
@@ -86,10 +86,6 @@ def percentage_conversion(expression):
         else:
             idx += 1
     return expression
-
-
-def sign_inversion(number):
-    return number * -1
 
 
 def add(num1, num2):
