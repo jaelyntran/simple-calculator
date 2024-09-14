@@ -1,5 +1,6 @@
 import tkinter as tk
 from simple_calculator_logic import calculate_expression
+from simple_calculator_logic import parse_equation
 
 
 class SimpleCalculator(tk.Tk):
@@ -37,19 +38,21 @@ class SimpleCalculator(tk.Tk):
             text, row, col = button[:3]
             colspan = button[3] if len(button) > 3 else 1
 
-            if text == 'AC':
+            if text == 'C':
                 cur_button = tk.Button(self, text=text,
                                        font=('Arial', 18), command=self.clear)
-                cur_button.grid(row=row, column=col, sticky='nsew')
+            elif text == '=':
+                cur_button = tk.Button(self, text=text,
+                                       font=('Arial', 18), command=self.on_equals)
             elif text == '0':
                 cur_button = tk.Button(self, text=text, font=('Arial', 18),
                                        command=lambda t=text: self.button_click(t))
-                cur_button.grid(row=row, column=col,
-                                columnspan=colspan, sticky='nsew')
             else:
                 cur_button = tk.Button(self, text=text, font=('Arial', 18),
                                        command=lambda t=text: self.button_click(t))
-                cur_button.grid(row=row, column=col, sticky='nsew')
+
+            cur_button.grid(row=row, column=col,
+                            columnspan=colspan, sticky='nsew')
 
         # Configure row and column weights
         for i in range(6):
@@ -61,5 +64,33 @@ class SimpleCalculator(tk.Tk):
         cur_text = self.result_var.get()
         self.result_var.set(cur_text + text)
 
+    def on_equals(self):
+        expression = self.result_var.get()
+        try:
+            expression = parse_equation(expression)
+            result = calculate_expression(expression)
+            if result.is_integer():
+                result = int(result)
+            self.result_var.set(result)
+        except ZeroDivisionError as e:
+            self.show_error(str(e))
+        except ValueError as e:
+            self.show_error(str(e))
+
+    def show_error(self, msg):
+        # Create a new Toplevel window
+        msg_window = tk.Toplevel(self)
+        msg_window.title('Error')
+        msg_window.geometry('400x300')
+        msg_window.minsize(350, 250)
+
+        # Create a Label widget to display the error message
+        error_label = tk.Label(msg_window, text=msg, padx=20, pady=20)
+        error_label.pack()
+
+        # Create an OK button to close the window
+        ok_button = tk.Button(msg_window, text='OK', command=msg_window.destroy)
+        ok_button.pack(pady=10)
+
     def clear(self):
-        self.result_var.set("")
+        self.result_var.set('')

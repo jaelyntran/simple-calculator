@@ -16,7 +16,13 @@ def parse_equation(user_input):
                     + number_pattern + r'%?' + r')*$'
 
     if not re.fullmatch(valid_pattern, user_input):
-        raise ValueError('Invalid characters or format in input.')
+        msg = ('Invalid characters or format in input: \n'
+               + user_input + '\n'
+               + 'Only numerical values '
+                 'and the following operators: \n'
+                 '+, -, *, /, % are allowed\n'
+               + 'Please enter a new equation')
+        raise ValueError(msg)
 
     # Define a pattern of number
     # or operators
@@ -89,21 +95,20 @@ def percentage_conversion(expression):
 
 
 def add(num1, num2):
-    return num1 + num2
+    return float(num1 + num2)
 
 
 def subtract(num1, num2):
-    return num1 - num2
+    return float(num1 - num2)
 
 
 def multiply(num1, num2):
-    result = round(num1 * num2, 8)
-    return f'{result:.8f}'
+    return round(float(num1 * num2), 8)
 
 
 def divide(num1, num2):
     if num2 == 0:
-        raise ZeroDivisionError('Cannot divide '
-                                'by zero')
-    result = round(num1 / num2, 8)
-    return f'{result:.8f}'
+        msg = ('Cannot divide by zero\n'
+               + 'Please enter a new equation')
+        raise ZeroDivisionError(msg)
+    return round(float(num1 / num2), 8)
