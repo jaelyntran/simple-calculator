@@ -86,7 +86,8 @@ def calculate_expression(expression):
                 result = divide(num1, num2)
 
             # Update the expression list
-            expression = expression[:idx - 2] + [result] + expression[idx + 2:]
+            del expression[idx:idx + 2]  # Remove the operator and the number after it
+            expression[idx - 1] = float(result)
             idx = max(0, idx - 1)  # Reset index to recheck current position
         else:
             idx += 1
@@ -114,9 +115,10 @@ def percentage_conversion(expression):
         if val in ['%']:
             num = expression[idx - 1]
             result = round(num / 100, 8)
+            expression.pop(idx)
 
             # Update the expression list
-            expression = expression[:idx - 1] + [result] + expression[idx + 1:]
+            expression[idx - 1] = float(result)
             idx = max(0, idx - 1)  # Reset index to recheck current position
         else:
             idx += 1
