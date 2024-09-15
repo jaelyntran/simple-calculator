@@ -11,29 +11,28 @@ class SimpleCalculator(tk.Tk):
         self.geometry('450x550')
         self.minsize(300, 400)
 
-        self.equation_var = tk.StringVar()
         self.result_var = tk.StringVar()
+        self.equation_var = tk.StringVar()
         self.bind('<Return>', self.on_equals)
 
         self.create_widgets()
 
     def create_widgets(self):
         # Configure entry box
-        display = tk.Entry(self, textvariable=self.equation_var,
-                           font=('Helvetica', 20), bd=4,
+        display = tk.Entry(self, textvariable=self.result_var,
+                           font=('Helvetica', 20), bd=3,
                            justify='right',
-                           insertwidth=3)
+                           insertwidth=2)
         display.grid(row=0, column=0, columnspan=4,
-                     sticky='nsew', padx=10, pady=10)
+                     sticky='nsew', padx=10, pady=(5, 0))
 
-        # Configure result label
-        result_label = tk.Label(self, textvariable=self.result_var,
-                                font=('Helvetica', 24), bd=4,
-                                justify='right',
-                                relief='sunken',
-                                anchor='e')
-        result_label.grid(row=1, column=0, columnspan=4,
-                          sticky='nsew', padx=10, pady=10)
+        # Configure label for equation display
+        equation_label = tk.Label(self, textvariable=self.equation_var,
+                                  font=('Helvetica', 16),
+                                  bg=self.cget('bg'),
+                                  anchor='e')
+        equation_label.grid(row=1, column=0, columnspan=4,
+                            sticky='nsew', padx=10, pady=(0, 5))
 
         # Button layout
         buttons = [
@@ -52,6 +51,9 @@ class SimpleCalculator(tk.Tk):
             if text == 'C':
                 cur_button = tk.Button(self, text=text,
                                        font=('Arial', 18), command=self.clear)
+            elif text == '+/-':
+                cur_button = tk.Button(self, text=text,
+                                       font=('Arial', 18), command=self.sign_inverse)
             elif text == '=':
                 cur_button = tk.Button(self, text=text,
                                        font=('Arial', 18), command=self.on_equals)
@@ -70,19 +72,53 @@ class SimpleCalculator(tk.Tk):
             self.grid_rowconfigure(i, weight=1)
         for j in range(4):
             self.grid_columnconfigure(j, weight=1)
+        self.grid_rowconfigure(1, weight=0)
+
+    def sign_inverse(self):
+        cur_text = self.result_var.get()
+        if cur_text == '':
+            # If entry is empty, add a minus sign
+            self.result_var.set('-')
+        elif cur_text.startswith('-'):
+            # If entry starts with a
+            # minus sign, remove it
+            self.result_var.set(cur_text[:1])
+        elif cur_text[len(cur_text) - 1] in '+-*/%':
+            self.result_var.set(cur_text + '-')
+        else:
+            # Inverse current number
+            try:
+                val = float(cur_text)
+                val = round(val * -1, 8)
+                if val.is_integer():
+                    val = int(val)
+                self.result_var.set(str(val))
+            except ValueError as e:
+                self.show_error(str(e))
 
     def button_click(self, text):
-        cur_text = self.equation_var.get()
-        self.equation_var.set(cur_text + text)
+        cur_text = self.result_var.get()
+
+        if cur_text == '' and text in '+*/%':
+            return
+        elif cur_text == '-' and text in '+-*/%':
+            self.result_var.set('')
+            self.equation_var.set('')
+        else:
+            # Update the equation with new entry
+            self.result_var.set(cur_text + text)
 
     def on_equals(self, event=None):
-        user_input = self.equation_var.get()
+        user_input = self.result_var.get()
         try:
             expression = parse_equation(user_input)
             result = calculate_expression(expression)
             if result.is_integer():
                 result = int(result)
-            self.result_var.set(f'{user_input}\n= {result}')
+            else:
+                result = round(result, 8)
+            self.result_var.set(result)
+            self.equation_var.set(user_input)
         except ZeroDivisionError as e:
             self.show_error(str(e))
         except ValueError as e:
@@ -104,5 +140,5 @@ class SimpleCalculator(tk.Tk):
         ok_button.pack(pady=10)
 
     def clear(self):
-        self.equation_var.set('')
         self.result_var.set('')
+        self.equation_var.set('')
