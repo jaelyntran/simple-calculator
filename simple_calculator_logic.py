@@ -25,8 +25,9 @@ def parse_equation(user_input):
 
     # Update patterns
     number_pattern = r'\d+\.?\d*'
-    operator_pattern = r'[-+*/%]'
-    pattern = f'{number_pattern}|{operator_pattern}'
+    operator_pattern = r'[-+*/]'
+    percentage_pattern = r'%'
+    pattern = f'{number_pattern}|{operator_pattern}|{percentage_pattern}'
     matches = re.findall(pattern, user_input)
 
     parsed_expression = []
@@ -53,6 +54,8 @@ def parse_equation(user_input):
                 elif i + 1 < len(matches) and re.match(operator_pattern, matches[i + 1]):
                     prev_was_operator = True
                 parsed_expression.append(match)
+        elif re.match(percentage_pattern, match):
+            parsed_expression.append(match)
         elif re.match(number_pattern, match):
             if neg_first_val:
                 parsed_expression.append(float(match) * -1)
@@ -62,7 +65,6 @@ def parse_equation(user_input):
                 prev_was_operator = False
             else:
                 parsed_expression.append(float(match))
-
     print("Parsed Expression:", parsed_expression)  # Debugging line
     return parsed_expression
 

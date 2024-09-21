@@ -36,32 +36,35 @@ class SimpleCalculator(tk.Tk):
 
         # Button layout
         buttons = [
-            ('C', 2, 0), ('+/-', 2, 1), ('%', 2, 2), ('/', 2, 3),
-            ('7', 3, 0), ('8', 3, 1), ('9', 3, 2), ('*', 3, 3),
-            ('4', 4, 0), ('5', 4, 1), ('6', 4, 2), ('-', 4, 3),
-            ('1', 5, 0), ('2', 5, 1), ('3', 5, 2), ('+', 5, 3),
-            ('0', 6, 0, 2), ('.', 6, 2), ('=', 6, 3)
+            ('C', '#d3ffc7', 2, 0), ('+/-', '#d3ffc7', 2, 1),
+            ('%', '#d3ffc7', 2, 2), ('/', '#f9f9f9', 2, 3),
+            ('7', '#ffffff', 3, 0), ('8', '#ffffff', 3, 1),
+            ('9', '#ffffff', 3, 2), ('*', '#f9f9f9', 3, 3),
+            ('4', '#ffffff', 4, 0), ('5', '#ffffff', 4, 1),
+            ('6', '#ffffff', 4, 2), ('-', '#f9f9f9', 4, 3),
+            ('1', '#ffffff', 5, 0), ('2', '#ffffff', 5, 1),
+            ('3', '#ffffff', 5, 2), ('+', '#f9f9f9', 5, 3),
+            ('0', '#ffffff', 6, 0, 2),
+            ('.', '#ffffff', 6, 2), ('=', '#f9f9f9', 6, 3)
         ]
 
         # Configure button
         for button in buttons:
-            text, row, col = button[:3]
-            colspan = button[3] if len(button) > 3 else 1
+            text, color, row, col = button[:4]
+            colspan = button[4] if len(button) > 4 else 1
 
             if text == 'C':
-                cur_button = tk.Button(self, text=text,
+                cur_button = tk.Button(self, text=text, bg=color,
                                        font=('Arial', 18), command=self.clear)
             elif text == '+/-':
-                cur_button = tk.Button(self, text=text,
+                cur_button = tk.Button(self, text=text, bg=color,
                                        font=('Arial', 18), command=self.sign_inverse)
             elif text == '=':
-                cur_button = tk.Button(self, text=text,
+                cur_button = tk.Button(self, text=text, bg=color,
                                        font=('Arial', 18), command=self.on_equals)
-            elif text == '0':
-                cur_button = tk.Button(self, text=text, font=('Arial', 18),
-                                       command=lambda t=text: self.button_click(t))
             else:
-                cur_button = tk.Button(self, text=text, font=('Arial', 18),
+                cur_button = tk.Button(self, text=text, bg=color,
+                                       font=('Arial', 18),
                                        command=lambda t=text: self.button_click(t))
 
             cur_button.grid(row=row, column=col,
@@ -96,6 +99,8 @@ class SimpleCalculator(tk.Tk):
             except ValueError as e:
                 self.show_error(str(e))
 
+        self.after(0, lambda: self.focus_to_end())
+
     def button_click(self, text):
         cur_text = self.result_var.get()
 
@@ -107,6 +112,8 @@ class SimpleCalculator(tk.Tk):
         else:
             # Update the equation with new entry
             self.result_var.set(cur_text + text)
+
+        self.after(0, lambda: self.focus_to_end())
 
     def on_equals(self, event=None):
         user_input = self.result_var.get()
@@ -123,6 +130,13 @@ class SimpleCalculator(tk.Tk):
             self.show_error(str(e))
         except ValueError as e:
             self.show_error(str(e))
+
+        self.after(0, lambda: self.focus_to_end())
+
+    def focus_to_end(self):
+        display = self.focus_get()
+        if isinstance(display, tk.Entry):
+            display.icursor(tk.END)
 
     def show_error(self, msg):
         # Create a new Toplevel window

@@ -1,5 +1,5 @@
 from simple_calculator_ui import SimpleCalculator
-import simple_calculator_logic
+# import simple_calculator_logic
 
 
 #def main():
